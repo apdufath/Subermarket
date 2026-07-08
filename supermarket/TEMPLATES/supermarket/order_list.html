@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2><i class="fas fa-shopping-cart text-danger"></i> Orders</h2>
+    <p class="text-muted">View all sales recorded in the system.</p>
+
+    <div class="mb-3">
+        <a href="{% url 'order_create' %}" class="btn btn-primary">Create Order</a>
+    </div>
+
+    <table class="table table-bordered table-striped mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Total ($)</th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in page_obj %}
+            <tr>
+                <td><strong>#{{ order.id }}</strong></td>
+                <td>{{ order.customer.full_name|default:"Walk-in Customer" }}</td>
+                <td>{{ order.date_ordered|date:"d M, Y H:i" }}</td>
+                <td class="text-success fw-bold">${{ order.total_amount }}</td>
+                <td class="text-center">
+                    <a href="{% url 'invoice' order.pk %}" class="btn btn-sm btn-info text-white">Invoice</a>
+                    <a href="{% url 'order_delete' order.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">No orders found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-sm mx-auto" style="max-width: 600px;">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="fas fa-truck"></i> {% if supplier %}Edit Supplier{% else %}Add Supplier{% endif %}</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Company Name *</label>
+                    <input type="text" name="name" class="form-control" placeholder="e.g. Star Wholesale" value="{{ supplier.company_name|default:'' }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Phone *</label>
+                    <input type="text" name="phone" class="form-control" placeholder="e.g. 555-0100" value="{{ supplier.phone|default:'' }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email *</label>
+                    <input type="email" name="email" class="form-control" placeholder="e.g. info@company.com" value="{{ supplier.email|default:'' }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Address *</label>
+                    <textarea name="address" class="form-control" rows="3" placeholder="City, district, street..." required>{{ supplier.address|default:'' }}</textarea>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{% url 'supplier_list' %}" class="btn btn-secondary">Back</a>
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2><i class="bi bi-receipt"></i> Invoice for Order #{{ order.id }}</h2>
+        <div>
+            <button onclick="window.print()" class="btn btn-outline-dark me-2">
+                <i class="bi bi-printer"></i> Print
+            </button>
+            <a href="{% url 'order_list' %}" class="btn btn-secondary">Back</a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5 class="text-muted">Customer</h5>
+                    <p class="mb-1"><strong>{{ order.customer.full_name }}</strong></p>
+                    <p class="mb-1">{{ order.customer.phone|default:"-" }}</p>
+                    <p class="mb-0">{{ order.customer.email|default:"-" }}</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <h5 class="text-muted">Order Details</h5>
+                    <p class="mb-1"><strong>Date:</strong> {{ order.date_ordered|date:"d M, Y H:i" }}</p>
+                    <p class="mb-0"><strong>Staff:</strong> {{ order.user.username|default:"-" }}</p>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Product</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-end">Unit Price</th>
+                            <th class="text-end">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items.all %}
+                        <tr>
+                            <td>
+                                <strong>{{ item.product.name }}</strong>
+                                <span class="text-muted"> × {{ item.quantity }}</span>
+                            </td>
+                            <td class="text-center">{{ item.quantity }}</td>
+                            <td class="text-end">${{ item.price }}</td>
+                            <td class="text-end fw-semibold">${{ item.subtotal }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">No items were added to this order.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="3" class="text-end">Grand Total</th>
+                            <th class="text-end text-success">${{ order.total_amount }}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

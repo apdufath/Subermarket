@@ -1,0 +1,45 @@
+{% load static %}
+<footer class="app-footer" role="contentinfo">
+    <div class="container-fluid px-4">
+        <div class="row g-4 align-items-start">
+            <!-- Left: Brand -->
+            <div class="col-12 col-md-6 col-lg-4 text-center text-lg-start">
+                <a href="{% url 'dashboard' %}" class="app-footer-brand d-inline-flex align-items-center gap-2 text-decoration-none mb-2">
+                    <img src="{% static 'img/auth-logo.svg' %}" alt="Star Supermarket" class="app-footer-logo" width="40" height="40">
+                    <span>
+                        <span class="app-footer-brand-name d-block">Star Supermarket</span>
+                        <span class="app-footer-brand-tagline d-block">Store Management System</span>
+                    </span>
+                </a>
+            </div>
+
+            <!-- Center: Quick Links -->
+            <div class="col-12 col-md-6 col-lg-4 text-center">
+                <h6 class="app-footer-heading">Quick Links</h6>
+                <nav class="app-footer-links" aria-label="Footer navigation">
+                    <a href="{% url 'dashboard' %}"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a>
+                    <a href="{% url 'product_list' %}"><i class="bi bi-box-seam me-1"></i>Products</a>
+                    <a href="{% url 'category_list' %}"><i class="bi bi-tags me-1"></i>Categories</a>
+                    <a href="{% url 'supplier_list' %}"><i class="bi bi-truck me-1"></i>Suppliers</a>
+                    <a href="{% url 'customer_list' %}"><i class="bi bi-people me-1"></i>Customers</a>
+                    <a href="{% url 'order_list' %}"><i class="bi bi-cart-check me-1"></i>Orders</a>
+                </nav>
+            </div>
+
+            <!-- Right: System Info -->
+            <div class="col-12 col-lg-4 text-center text-lg-end">
+                <h6 class="app-footer-heading">System Information</h6>
+                <ul class="app-footer-info list-unstyled mb-0">
+                    <li><i class="bi bi-info-circle me-1"></i>Version: <strong>v1.0.0</strong></li>
+                    <li><i class="bi bi-code-slash me-1"></i>Developed by: <strong>Star Supermarket Development Team</strong></li>
+                    <li><i class="bi bi-c-circle me-1"></i>&copy; {% now "Y" %} Star Supermarket</li>
+                    <li class="text-muted">All Rights Reserved.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="app-footer-bottom text-center">
+            <span><i class="bi bi-heart-fill text-danger me-1"></i>Built with Django &amp; Bootstrap 5</span>
+        </div>
+    </div>
+</footer>

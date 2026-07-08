@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">{% if product %}Edit Product{% else %}Add Product{% endif %}</h1>
+    </div>
+
+    <div class="card shadow-sm col-md-10">
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Product Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="name" name="name" value="{{ product.name|default:'' }}" required placeholder="e.g. White Oil 3L">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="barcode" class="form-label">Barcode (optional)</label>
+                                <input type="text" class="form-control" id="barcode" name="barcode" value="{{ product.barcode|default:'' }}" placeholder="Scan or enter manually">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="category" class="form-label">Category <span class="text-danger">*</span></label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="">-- Select category --</option>
+                                    {% for cat in categories %}
+                                        <option value="{{ cat.id }}" {% if product and product.category_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="supplier" class="form-label">Supplier (optional)</label>
+                                <select class="form-select" id="supplier" name="supplier">
+                                    <option value="">-- Select supplier --</option>
+                                    {% for sup in suppliers %}
+                                        <option value="{{ sup.id }}" {% if product and product.supplier_id == sup.id %}selected{% endif %}>{{ sup.company_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="cost_price" class="form-label">Cost Price ($) <span class="text-danger">*</span></label>
+                                <input type="number" step="0.01" class="form-control" id="cost_price" name="cost_price" value="{{ product.cost_price|default:'' }}" required placeholder="0.00">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="selling_price" class="form-label">Selling Price ($) <span class="text-danger">*</span></label>
+                                <input type="number" step="0.01" class="form-control" id="selling_price" name="selling_price" value="{{ product.price|default:'' }}" required placeholder="0.00">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="stock" class="form-label">Stock Quantity <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="stock" name="stock" value="{{ product.stock|default:0 }}" required placeholder="0">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description (optional)</label>
+                            <textarea class="form-control" id="description" name="description" rows="3" placeholder="Product description...">{{ product.description|default:'' }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Product Image</label>
+                        <div class="border rounded p-3 bg-light text-center mb-3">
+                            <img id="image-preview"
+                                 src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/product-placeholder.svg' %}{% endif %}"
+                                 alt="Product image preview"
+                                 class="img-fluid rounded"
+                                 style="max-height: 220px; object-fit: contain;"
+                                 onerror="this.onerror=null;this.src='{% static 'img/product-placeholder.svg' %}';">
+                        </div>
+
+                        <input type="file"
+                               class="form-control mb-2"
+                               id="image"
+                               name="image"
+                               accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+                        <div class="form-text">Allowed formats: JPG, JPEG, PNG, WEBP. Max size: 5 MB.</div>
+
+                        {% if product.image %}
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" id="remove_image" name="remove_image">
+                            <label class="form-check-label text-danger" for="remove_image">Remove current image</label>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 mt-3">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-save"></i> {% if product %}Update{% else %}Save Product{% endif %}
+                    </button>
+                    <a href="{% url 'product_list' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const imageInput = document.getElementById('image');
+    const preview = document.getElementById('image-preview');
+    const removeCheckbox = document.getElementById('remove_image');
+    const placeholder = "{% static 'img/product-placeholder.svg' %}";
+    const currentImage = "{% if product.image %}{{ product.image.url }}{% endif %}";
+
+    if (imageInput) {
+        imageInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('Please select a JPG, JPEG, PNG, or WEBP image.');
+                imageInput.value = '';
+                return;
+            }
+            preview.src = URL.createObjectURL(file);
+            if (removeCheckbox) {
+                removeCheckbox.checked = false;
+            }
+        });
+    }
+
+    if (removeCheckbox) {
+        removeCheckbox.addEventListener('change', function () {
+            if (removeCheckbox.checked) {
+                preview.src = placeholder;
+                if (imageInput) {
+                    imageInput.value = '';
+                }
+            } else if (currentImage) {
+                preview.src = currentImage;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

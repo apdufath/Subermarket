@@ -1,0 +1,13 @@
+{% load static %}
+{% if product.image %}
+<img src="{{ product.image.url }}"
+     alt="{{ product.name }}"
+     class="{{ css_class|default:'rounded' }}"
+     style="{{ style|default:'' }}"
+     onerror="this.onerror=null;this.src='{% static 'img/product-placeholder.svg' %}';">
+{% else %}
+<img src="{% static 'img/product-placeholder.svg' %}"
+     alt="No image for {{ product.name }}"
+     class="{{ css_class|default:'rounded' }}"
+     style="{{ style|default:'' }}">
+{% endif %}

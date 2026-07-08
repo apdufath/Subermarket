@@ -1,0 +1,119 @@
+{% load static %}
+{% with url_name=request.resolver_match.url_name|default:'' %}
+<nav class="sidebar-nav">
+    <div class="sidebar-brand">
+        <a href="{% url 'dashboard' %}" class="sidebar-brand-link">
+            <img src="{% static 'img/auth-logo.svg' %}" alt="Star Supermarket" class="sidebar-logo">
+            <span class="sidebar-brand-text">
+                <span class="sidebar-brand-name">Star Supermarket</span>
+                <span class="sidebar-brand-tagline">Store Management</span>
+            </span>
+        </a>
+        <button type="button" class="sidebar-collapse-btn d-none d-lg-inline-flex" id="sidebarCollapseBtn" title="Collapse sidebar" aria-label="Collapse sidebar">
+            <i class="bi bi-layout-sidebar-inset"></i>
+        </button>
+    </div>
+
+    <div class="sidebar-scroll">
+        <div class="sidebar-group">
+            <span class="sidebar-group-label">Main</span>
+            <ul class="nav flex-column sidebar-menu">
+                <li class="nav-item">
+                    <a class="sidebar-link {% if url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">
+                        <i class="bi bi-speedometer2 sidebar-icon"></i>
+                        <span class="sidebar-text">Dashboard</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="sidebar-group">
+            <span class="sidebar-group-label">Inventory</span>
+            <ul class="nav flex-column sidebar-menu">
+                <li class="nav-item">
+                    <a class="sidebar-link {% if 'product' in url_name %}active{% endif %}" href="{% url 'product_list' %}">
+                        <i class="bi bi-box-seam sidebar-icon"></i>
+                        <span class="sidebar-text">Products</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="sidebar-link {% if 'category' in url_name %}active{% endif %}" href="{% url 'category_list' %}">
+                        <i class="bi bi-tags sidebar-icon"></i>
+                        <span class="sidebar-text">Categories</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="sidebar-link {% if 'supplier' in url_name %}active{% endif %}" href="{% url 'supplier_list' %}">
+                        <i class="bi bi-truck sidebar-icon"></i>
+                        <span class="sidebar-text">Suppliers</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="sidebar-group">
+            <span class="sidebar-group-label">Sales</span>
+            <ul class="nav flex-column sidebar-menu">
+                <li class="nav-item">
+                    <a class="sidebar-link {% if url_name == 'pos' %}active{% endif %}" href="{% url 'pos' %}">
+                        <i class="bi bi-pc-display sidebar-icon"></i>
+                        <span class="sidebar-text">POS Terminal</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="sidebar-link {% if 'order' in url_name or url_name == 'invoice' %}active{% endif %}" href="{% url 'order_list' %}">
+                        <i class="bi bi-cart-check sidebar-icon"></i>
+                        <span class="sidebar-text">Orders</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="sidebar-link {% if 'customer' in url_name %}active{% endif %}" href="{% url 'customer_list' %}">
+                        <i class="bi bi-people sidebar-icon"></i>
+                        <span class="sidebar-text">Customers</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="sidebar-group">
+            <span class="sidebar-group-label">Reports</span>
+            <ul class="nav flex-column sidebar-menu">
+                <li class="nav-item">
+                    <a class="sidebar-link {% if url_name == 'sales_list' %}active{% endif %}" href="{% url 'sales_list' %}">
+                        <i class="bi bi-bar-chart-line sidebar-icon"></i>
+                        <span class="sidebar-text">Reports</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="sidebar-group">
+            <span class="sidebar-group-label">System</span>
+            <ul class="nav flex-column sidebar-menu">
+                <li class="nav-item">
+                    <a class="sidebar-link sidebar-settings-link" href="#" role="button">
+                        <i class="bi bi-gear sidebar-icon"></i>
+                        <span class="sidebar-text">Settings</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <form method="post" action="{% url 'logout' %}" class="sidebar-logout-form">
+                        {% csrf_token %}
+                        <button type="submit" class="sidebar-link sidebar-logout-btn">
+                            <i class="bi bi-box-arrow-right sidebar-icon"></i>
+                            <span class="sidebar-text">Logout</span>
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="sidebar-footer">
+        <div class="sidebar-footer-text">
+            <strong>Star Supermarket</strong>
+            <span>© 2026 All Rights Reserved</span>
+        </div>
+    </div>
+</nav>
+{% endwith %}

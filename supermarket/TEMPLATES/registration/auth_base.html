@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block auth_title %}Star Supermarket{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/brand.css' %}">
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+</head>
+<body class="auth-page">
+    <div class="auth-background" aria-hidden="true">
+        <div class="auth-shape auth-shape-1"></div>
+        <div class="auth-shape auth-shape-2"></div>
+    </div>
+
+    <div class="auth-wrapper">
+        <div class="auth-wrapper-split w-100">
+            <div class="auth-panel-brand">
+                <img src="{% static 'img/auth-logo.svg' %}" alt="" class="auth-logo mb-4" width="80" height="80">
+                <h2>Star Supermarket</h2>
+                <p>{% block auth_panel_text %}Your complete store management solution for inventory, sales, and operations.{% endblock %}</p>
+                <ul class="auth-feature-list">
+                    <li><i class="bi bi-check-circle-fill"></i> Real-time inventory tracking</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Point of sale &amp; order management</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Secure staff authentication</li>
+                </ul>
+            </div>
+
+            <div class="auth-container {% block auth_container_class %}{% endblock %}">
+                <div class="auth-card">
+                    <div class="auth-brand">
+                        <img src="{% static 'img/auth-logo.svg' %}" alt="Star Supermarket" class="auth-logo">
+                        <h1 class="auth-brand-title">{% block auth_heading %}Star Supermarket{% endblock %}</h1>
+                        <p class="auth-brand-subtitle">{% block auth_subheading %}{% endblock %}</p>
+                    </div>
+
+                    {% block auth_content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-footer-wrap">
+        {% include 'includes/footer.html' %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    (function () {
+        document.querySelectorAll('.auth-password-toggle').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var input = document.getElementById(btn.getAttribute('data-target'));
+                if (!input) return;
+                var isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                btn.querySelector('i').className = isPassword ? 'bi bi-eye-slash' : 'bi bi-eye';
+                btn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+            });
+        });
+
+        document.querySelectorAll('.auth-form').forEach(function (form) {
+            form.addEventListener('submit', function () {
+                var btn = form.querySelector('[type="submit"]');
+                if (!btn || btn.disabled) return;
+                btn.disabled = true;
+                var text = btn.querySelector('.auth-btn-text');
+                var spinner = btn.querySelector('.auth-btn-spinner');
+                if (text) text.classList.add('d-none');
+                if (spinner) spinner.classList.remove('d-none');
+            });
+        });
+    })();
+    </script>
+    {% block auth_extra_js %}{% endblock %}
+</body>
+</html>

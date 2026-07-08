@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/products.css' %}">
+
+<div class="products-page">
+    <!-- Page Header -->
+    <div class="products-page-header d-flex flex-wrap justify-content-between align-items-start gap-3">
+        <div>
+            <h1 class="h2 mb-1"><i class="bi bi-box-seam text-primary me-2"></i>Products</h1>
+            <p class="products-subtitle mb-0">
+                Manage your inventory with a premium card-based catalog
+                {% if total_results is not None %}
+                &middot; <span class="products-results-count">{{ total_results }} product{{ total_results|pluralize }} found</span>
+                {% endif %}
+            </p>
+        </div>
+        <a href="{% url 'product_create' %}" class="btn btn-primary btn-add-product">
+            <i class="bi bi-plus-circle me-1"></i> Add Product
+        </a>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="products-toolbar">
+        <form method="GET" action="{% url 'product_list' %}" id="productsFilterForm">
+            <div class="row g-3 align-items-end">
+                <div class="col-lg-4">
+                    <label for="searchInput" class="form-label small fw-semibold text-muted mb-1">Search Products</label>
+                    <div class="products-search-wrap">
+                        <i class="bi bi-search"></i>
+                        <input class="form-control" type="search" id="searchInput" name="search"
+                               placeholder="Search by name, barcode, or SKU..."
+                               value="{{ search_query }}">
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-lg-2">
+                    <label for="categoryFilter" class="form-label small fw-semibold text-muted mb-1">Category</label>
+                    <select class="form-select" id="categoryFilter" name="category" onchange="this.form.submit()">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if category_filter == category.id|stringformat:"s" %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-sm-6 col-lg-2">
+                    <label for="sortFilter" class="form-label small fw-semibold text-muted mb-1">Sort By</label>
+                    <select class="form-select" id="sortFilter" name="sort" onchange="this.form.submit()">
+                        <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest First</option>
+                        <option value="oldest" {% if sort_by == 'oldest' %}selected{% endif %}>Oldest First</option>
+                        <option value="name_asc" {% if sort_by == 'name_asc' %}selected{% endif %}>Name (A–Z)</option>
+                        <option value="name_desc" {% if sort_by == 'name_desc' %}selected{% endif %}>Name (Z–A)</option>
+                        <option value="price_asc" {% if sort_by == 'price_asc' %}selected{% endif %}>Price (Low–High)</option>
+                        <option value="price_desc" {% if sort_by == 'price_desc' %}selected{% endif %}>Price (High–Low)</option>
+                        <option value="stock_asc" {% if sort_by == 'stock_asc' %}selected{% endif %}>Stock (Low–High)</option>
+                        <option value="stock_desc" {% if sort_by == 'stock_desc' %}selected{% endif %}>Stock (High–Low)</option>
+                    </select>
+                </div>
+
+                <div class="col-lg-4 d-flex gap-2 justify-content-lg-end align-items-end">
+                    <div>
+                        <label class="form-label small fw-semibold text-muted mb-1 d-block">View</label>
+                        <div class="btn-group view-toggle" role="group" aria-label="View toggle">
+                            <button type="button" class="btn btn-outline-secondary active" id="btnGridView" title="Grid view">
+                                <i class="bi bi-grid-3x3-gap-fill"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" id="btnListView" title="List view">
+                                <i class="bi bi-list-ul"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="btn btn-dark px-4" type="submit">
+                        <i class="bi bi-funnel me-1"></i> Filter
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    {% if page_obj.object_list %}
+        <!-- Grid View -->
+        <div id="productsGrid" class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-4">
+            {% for product in page_obj %}
+                {% include 'supermarket/partials/product_card.html' with product=product %}
+            {% endfor %}
+        </div>
+
+        <!-- List View -->
+        <div id="productsList" class="d-none">
+            {% for product in page_obj %}
+                {% include 'supermarket/partials/product_list_row.html' with product=product %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="products-empty">
+            <i class="bi bi-inbox d-block"></i>
+            <h4 class="text-muted fw-semibold">No products found</h4>
+            <p class="text-secondary mb-3">Try adjusting your search or filters, or add a new product.</p>
+            <a href="{% url 'product_create' %}" class="btn btn-primary btn-add-product">
+                <i class="bi bi-plus-circle me-1"></i> Add Product
+            </a>
+        </div>
+    {% endif %}
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav class="d-flex justify-content-center mt-4 products-pagination" aria-label="Products pagination">
+        <ul class="pagination flex-wrap justify-content-center mb-0">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}&category={{ category_filter }}&sort={{ sort_by }}">
+                    <i class="bi bi-chevron-left"></i> Previous
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}&search={{ search_query }}&category={{ category_filter }}&sort={{ sort_by }}">{{ num }}</a>
+            </li>
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}&search={{ search_query }}&category={{ category_filter }}&sort={{ sort_by }}">
+                    Next <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<script>
+(function () {
+    const gridView = document.getElementById('productsGrid');
+    const listView = document.getElementById('productsList');
+    const btnGrid = document.getElementById('btnGridView');
+    const btnList = document.getElementById('btnListView');
+
+    if (!gridView || !listView || !btnGrid || !btnList) return;
+
+    function setView(view) {
+        const isList = view === 'list';
+        gridView.classList.toggle('d-none', isList);
+        listView.classList.toggle('d-none', !isList);
+        btnGrid.classList.toggle('active', !isList);
+        btnList.classList.toggle('active', isList);
+        try { localStorage.setItem('productsView', view); } catch (e) {}
+    }
+
+    let saved = 'grid';
+    try { saved = localStorage.getItem('productsView') || 'grid'; } catch (e) {}
+    setView(saved);
+
+    btnGrid.addEventListener('click', function () { setView('grid'); });
+    btnList.addEventListener('click', function () { setView('list'); });
+})();
+</script>
+{% endblock %}

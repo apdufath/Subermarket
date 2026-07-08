@@ -1,0 +1,119 @@
+/* Order & POS quantity UI */
+
+.order-product-row.selected {
+    background: rgba(var(--brand-primary-rgb), 0.06);
+    border-color: rgba(var(--brand-primary-rgb), 0.25) !important;
+}
+
+.order-product-row.stock-error {
+    background: rgba(220, 38, 38, 0.06);
+    border-color: rgba(220, 38, 38, 0.35) !important;
+}
+
+.qty-control {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--brand-border);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: #fff;
+}
+
+.qty-control button {
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    background: var(--brand-bg-gray);
+    color: var(--brand-text-dark);
+    font-weight: 700;
+    line-height: 1;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.qty-control button:hover:not(:disabled) {
+    background: rgba(var(--brand-accent-rgb), 0.2);
+    color: var(--brand-dark-green);
+}
+
+.qty-control button:disabled {
+    opacity: 0.45;
+}
+
+.qty-control input {
+    width: 3rem;
+    border: none;
+    border-left: 1px solid var(--brand-border);
+    border-right: 1px solid var(--brand-border);
+    text-align: center;
+    font-weight: 600;
+    padding: 0.25rem;
+}
+
+.qty-control input:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.order-summary-panel {
+    position: sticky;
+    top: calc(var(--navbar-height, 68px) + 1rem);
+}
+
+.order-line-subtotal {
+    font-weight: 700;
+    color: var(--brand-primary-green);
+}
+
+.stock-warning {
+    font-size: 0.8rem;
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.pos-product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem;
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.pos-product-tile {
+    border: 1px solid var(--brand-border);
+    border-radius: 0.75rem;
+    padding: 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #fff;
+}
+
+.pos-product-tile:hover {
+    border-color: var(--brand-primary-green);
+    box-shadow: 0 4px 12px rgba(var(--brand-dark-rgb), 0.1);
+    transform: translateY(-2px);
+}
+
+.pos-product-tile img {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+}
+
+.pos-product-tile .name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.35rem;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.pos-product-tile .price {
+    font-size: 0.8rem;
+    color: var(--brand-dark-green);
+    font-weight: 700;
+}

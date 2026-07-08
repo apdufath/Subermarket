@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120" role="img" aria-label="No product image">
+  <rect width="120" height="120" rx="12" fill="#e9ecef"/>
+  <rect x="24" y="28" width="72" height="52" rx="6" fill="#ced4da"/>
+  <circle cx="42" cy="46" r="8" fill="#adb5bd"/>
+  <path d="M30 72 L50 54 L66 68 L78 58 L90 72 Z" fill="#adb5bd"/>
+  <text x="60" y="98" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#6c757d">No Image</text>
+</svg>

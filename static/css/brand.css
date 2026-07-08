@@ -1,0 +1,187 @@
+/* Star Supermarket — Brand Design System */
+
+:root {
+    /* Core palette */
+    --brand-dark-green: #0B4D3A;
+    --brand-primary-green: #1E7A4A;
+    --brand-accent-green: #7ED957;
+    --brand-light-green: #B9F26D;
+    --brand-white: #FFFFFF;
+    --brand-bg-gray: #F8F9FA;
+    --brand-text-dark: #1F2937;
+    --brand-border: #E5E7EB;
+
+    /* Primary gradient */
+    --brand-gradient: linear-gradient(135deg, #0B4D3A 0%, #1E7A4A 45%, #7ED957 100%);
+    --brand-gradient-vertical: linear-gradient(180deg, #0B4D3A 0%, #1E7A4A 55%, #0B4D3A 100%);
+
+    /* RGB helpers */
+    --brand-dark-rgb: 11, 77, 58;
+    --brand-primary-rgb: 30, 122, 74;
+    --brand-accent-rgb: 126, 217, 87;
+    --brand-light-rgb: 185, 242, 109;
+
+    /* Legacy aliases (used across component CSS) */
+    --brand-primary: var(--brand-dark-green);
+    --brand-secondary: var(--brand-primary-green);
+    --brand-accent: var(--brand-accent-green);
+
+    /* Transitions */
+    --brand-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Global base */
+body {
+    background: var(--brand-bg-gray);
+    color: var(--brand-text-dark);
+}
+
+/* Bootstrap button overrides */
+.btn-primary {
+    --bs-btn-bg: var(--brand-dark-green);
+    --bs-btn-border-color: var(--brand-dark-green);
+    --bs-btn-hover-bg: var(--brand-primary-green);
+    --bs-btn-hover-border-color: var(--brand-primary-green);
+    --bs-btn-active-bg: #094a38;
+    --bs-btn-active-border-color: #094a38;
+    --bs-btn-focus-shadow-rgb: var(--brand-primary-rgb);
+}
+
+.btn-success {
+    --bs-btn-bg: var(--brand-accent-green);
+    --bs-btn-border-color: var(--brand-accent-green);
+    --bs-btn-color: var(--brand-dark-green);
+    --bs-btn-hover-bg: var(--brand-light-green);
+    --bs-btn-hover-border-color: var(--brand-light-green);
+    --bs-btn-hover-color: var(--brand-dark-green);
+    --bs-btn-active-bg: #6bc84a;
+    --bs-btn-active-border-color: #6bc84a;
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--brand-dark-green);
+    --bs-btn-border-color: var(--brand-primary-green);
+    --bs-btn-hover-bg: var(--brand-dark-green);
+    --bs-btn-hover-border-color: var(--brand-dark-green);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-active-bg: var(--brand-primary-green);
+    --bs-btn-active-border-color: var(--brand-primary-green);
+}
+
+.btn-outline-success {
+    --bs-btn-color: var(--brand-primary-green);
+    --bs-btn-border-color: var(--brand-accent-green);
+    --bs-btn-hover-bg: var(--brand-accent-green);
+    --bs-btn-hover-border-color: var(--brand-accent-green);
+    --bs-btn-hover-color: var(--brand-dark-green);
+}
+
+.btn-secondary {
+    --bs-btn-bg: var(--brand-light-green);
+    --bs-btn-border-color: var(--brand-light-green);
+    --bs-btn-color: var(--brand-dark-green);
+    --bs-btn-hover-bg: #a8e05c;
+    --bs-btn-hover-border-color: #a8e05c;
+    --bs-btn-hover-color: var(--brand-dark-green);
+}
+
+/* Gradient button utility */
+.btn-brand-gradient {
+    background: var(--brand-gradient);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    transition: transform var(--brand-transition), box-shadow var(--brand-transition);
+}
+
+.btn-brand-gradient:hover {
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(var(--brand-dark-rgb), 0.35);
+}
+
+/* Forms */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--brand-primary-green);
+    box-shadow: 0 0 0 0.2rem rgba(var(--brand-primary-rgb), 0.15);
+}
+
+.form-check-input:checked {
+    background-color: var(--brand-primary-green);
+    border-color: var(--brand-primary-green);
+}
+
+/* Tables */
+.table-hover > tbody > tr:hover {
+    background-color: rgba(var(--brand-accent-rgb), 0.08);
+}
+
+.table-dark {
+    --bs-table-bg: var(--brand-dark-green);
+    --bs-table-border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Badges */
+.badge.bg-primary,
+.bg-primary {
+    background-color: var(--brand-dark-green) !important;
+}
+
+.badge.bg-success,
+.bg-success:not(.btn) {
+    background-color: var(--brand-primary-green) !important;
+}
+
+.badge-brand-accent {
+    background: var(--brand-accent-green) !important;
+    color: var(--brand-dark-green) !important;
+}
+
+/* Alerts */
+.alert-success {
+    --bs-alert-bg: rgba(var(--brand-accent-rgb), 0.15);
+    --bs-alert-border-color: rgba(var(--brand-primary-rgb), 0.35);
+    --bs-alert-color: var(--brand-dark-green);
+}
+
+/* Pagination */
+.pagination .page-item.active .page-link {
+    background-color: var(--brand-dark-green);
+    border-color: var(--brand-dark-green);
+}
+
+.pagination .page-link {
+    color: var(--brand-primary-green);
+}
+
+.pagination .page-link:hover {
+    color: var(--brand-dark-green);
+    background-color: rgba(var(--brand-accent-rgb), 0.12);
+}
+
+/* Cards */
+.card {
+    border-color: var(--brand-border);
+}
+
+.card-header.bg-dark {
+    background: var(--brand-gradient) !important;
+    border: none;
+}
+
+/* Text utilities */
+.text-brand { color: var(--brand-dark-green) !important; }
+.text-brand-accent { color: var(--brand-accent-green) !important; }
+.bg-brand-gradient { background: var(--brand-gradient) !important; }
+
+/* Links */
+a {
+    transition: color var(--brand-transition);
+}
+
+/* Navbar date badge green tint */
+.navbar-date {
+    background: rgba(var(--brand-accent-rgb), 0.15);
+    color: var(--brand-dark-green);
+}

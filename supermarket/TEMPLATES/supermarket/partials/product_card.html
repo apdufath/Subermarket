@@ -1,0 +1,72 @@
+{% load static product_extras %}
+{% with status=product.stock|stock_status %}
+<div class="col">
+    <article class="product-card">
+        <div class="product-card-image-wrap">
+            <a href="{% url 'product_detail' product.id %}" class="product-card-image-link" title="View {{ product.name }}">
+                {% include 'supermarket/partials/product_image.html' with product=product css_class='w-100 h-100' %}
+            </a>
+            <div class="product-card-badges">
+                <span class="badge badge-category rounded-pill">
+                    <i class="bi bi-tag-fill me-1"></i>{{ product.category.name }}
+                </span>
+                {% if status == 'out' %}
+                    <span class="badge badge-stock-out rounded-pill">Out of Stock</span>
+                {% elif status == 'low' %}
+                    <span class="badge badge-stock-low rounded-pill">Low Stock</span>
+                {% else %}
+                    <span class="badge badge-stock-in rounded-pill">In Stock</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="product-card-body">
+            <h2 class="product-card-title">
+                <a href="{% url 'product_detail' product.id %}">{{ product.name }}</a>
+            </h2>
+
+            <div class="product-meta-grid">
+                <div class="product-meta-item">
+                    <span class="product-meta-label">SKU</span>
+                    <span class="product-meta-value">{{ product.description|extract_sku }}</span>
+                </div>
+                <div class="product-meta-item">
+                    <span class="product-meta-label">Barcode</span>
+                    <span class="product-meta-value">{{ product.barcode|default:"—" }}</span>
+                </div>
+                <div class="product-meta-item">
+                    <span class="product-meta-label">Stock</span>
+                    <span class="product-meta-value">{{ product.stock }} units</span>
+                </div>
+                <div class="product-meta-item">
+                    <span class="product-meta-label">Cost</span>
+                    <span class="product-meta-value">${{ product.cost_price }}</span>
+                </div>
+            </div>
+
+            <div class="product-prices">
+                <span class="product-price-selling">${{ product.price }}</span>
+                <span class="product-price-cost">Selling price</span>
+            </div>
+
+            {% if product.date_added %}
+            <p class="product-card-date mb-0">
+                <i class="bi bi-calendar3 me-1"></i>{{ product.date_added|date:"M d, Y" }}
+            </p>
+            {% endif %}
+        </div>
+
+        <div class="product-card-actions">
+            <a href="{% url 'product_detail' product.id %}" class="btn btn-action-view" title="View">
+                <i class="bi bi-eye me-1"></i>View
+            </a>
+            <a href="{% url 'product_update' product.id %}" class="btn btn-action-edit" title="Edit">
+                <i class="bi bi-pencil me-1"></i>Edit
+            </a>
+            <a href="{% url 'product_delete' product.id %}" class="btn btn-action-delete" title="Delete">
+                <i class="bi bi-trash me-1"></i>Delete
+            </a>
+        </div>
+    </article>
+</div>
+{% endwith %}

@@ -1,0 +1,107 @@
+{% extends 'registration/auth_base.html' %}
+
+{% block auth_title %}Sign Up — Star Supermarket{% endblock %}
+{% block auth_container_class %}auth-container-wide{% endblock %}
+{% block auth_heading %}Create Account{% endblock %}
+{% block auth_subheading %}Join Star Supermarket and start managing your store{% endblock %}
+{% block auth_panel_text %}Create your staff account to access inventory management, POS terminal, and sales reporting.{% endblock %}
+
+{% block auth_content %}
+<a href="{% url 'login' %}" class="auth-back-link">
+    <i class="bi bi-arrow-left"></i> Back to Login
+</a>
+
+<form method="post" class="auth-form needs-validation" novalidate>
+    {% csrf_token %}
+
+    <div class="form-floating auth-field">
+        {{ form.full_name }}
+        <label for="{{ form.full_name.id_for_label }}">{{ form.full_name.label }}</label>
+        <i class="bi bi-person-badge auth-field-icon"></i>
+        {% if form.full_name.errors %}
+        <div class="invalid-feedback d-block">{{ form.full_name.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <div class="form-floating auth-field">
+        {{ form.username }}
+        <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+        <i class="bi bi-at auth-field-icon"></i>
+        {% if form.username.errors %}
+        <div class="invalid-feedback d-block">{{ form.username.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <div class="form-floating auth-field">
+        {{ form.email }}
+        <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+        <i class="bi bi-envelope auth-field-icon"></i>
+        {% if form.email.errors %}
+        <div class="invalid-feedback d-block">{{ form.email.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <div class="form-floating auth-field">
+        {{ form.phone }}
+        <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
+        <i class="bi bi-telephone auth-field-icon"></i>
+        {% if form.phone.errors %}
+        <div class="invalid-feedback d-block">{{ form.phone.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <div class="form-floating auth-field">
+        {{ form.password1 }}
+        <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+        <i class="bi bi-shield-lock auth-field-icon"></i>
+        <button type="button" class="auth-password-toggle" data-target="{{ form.password1.id_for_label }}" aria-label="Show password">
+            <i class="bi bi-eye"></i>
+        </button>
+        {% if form.password1.errors %}
+        <div class="invalid-feedback d-block">{{ form.password1.errors.0 }}</div>
+        {% else %}
+        <div class="form-text small text-muted mt-1 ms-1">Use 8+ characters with letters and numbers.</div>
+        {% endif %}
+    </div>
+
+    <div class="form-floating auth-field">
+        {{ form.password2 }}
+        <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+        <i class="bi bi-shield-check auth-field-icon"></i>
+        <button type="button" class="auth-password-toggle" data-target="{{ form.password2.id_for_label }}" aria-label="Show password">
+            <i class="bi bi-eye"></i>
+        </button>
+        {% if form.password2.errors %}
+        <div class="invalid-feedback d-block">{{ form.password2.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger auth-alert">
+        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+    </div>
+    {% endif %}
+
+    <button type="submit" class="btn auth-btn-primary mt-2">
+        <span class="auth-btn-text"><i class="bi bi-person-plus me-2"></i>Create Account</span>
+        <span class="auth-btn-spinner spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+    </button>
+</form>
+
+<div class="auth-footer">
+    Already have an account?
+    <a href="{% url 'login' %}">Sign in</a>
+</div>
+{% endblock %}
+
+{% block auth_extra_js %}
+<script>
+(function () {
+    document.querySelectorAll('.auth-form .form-control').forEach(function (input) {
+        if (input.closest('.auth-field') && input.closest('.auth-field').querySelector('.invalid-feedback')) {
+            input.classList.add('is-invalid');
+        }
+    });
+})();
+</script>
+{% endblock %}

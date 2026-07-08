@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/order.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="row pt-2">
+    <div class="col-12 mb-3">
+        <h2 class="h3 mb-0"><i class="bi bi-pc-display text-primary"></i> Point of Sale (POS)</h2>
+        <p class="text-muted small mb-0">Scan or select products, adjust quantities, and complete the sale.</p>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
+                <h5 class="mb-0"><i class="bi bi-cart3"></i> Cart</h5>
+                <span id="live-clock" class="badge bg-secondary font-monospace"></span>
+            </div>
+            <div class="card-body">
+                <div class="mb-3 position-relative">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-light"><i class="bi bi-qr-code-scan"></i></span>
+                        <input type="text" id="barcode-input" class="form-control"
+                               placeholder="Scan barcode or search product name..." autofocus>
+                    </div>
+                    <div id="search-results" class="list-group position-absolute w-100 shadow-lg d-none" style="z-index:1050;"></div>
+                </div>
+
+                <p class="small text-muted mb-2">Quick add products</p>
+                <div id="pos-product-grid" class="pos-product-grid mb-3"></div>
+
+                <div class="alert alert-danger d-none" id="posStockAlert"></div>
+
+                <div class="table-responsive" style="max-height: 360px; overflow-y: auto;">
+                    <table class="table table-bordered table-hover align-middle mb-0">
+                        <thead class="table-light sticky-top">
+                            <tr>
+                                <th>Product</th>
+                                <th style="width:100px;">Unit Price</th>
+                                <th style="width:140px;">Qty</th>
+                                <th style="width:100px;">Subtotal</th>
+                                <th style="width:50px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="cart-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <form method="POST" id="posCheckoutForm">
+            {% csrf_token %}
+            <div id="posHiddenFields"></div>
+
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <h5 class="card-title border-bottom pb-2">Checkout</h5>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Customer *</label>
+                        <select name="customer" class="form-select" required>
+                            <option value="">Select customer...</option>
+                            {% for customer in customers %}
+                            <option value="{{ customer.id }}">{{ customer.full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <span id="summary-subtotal" class="fw-bold">$0.00</span>
+                    </div>
+                    <div class="mb-2">
+                        <label for="tax-input" class="form-label small">Tax ($)</label>
+                        <input type="number" id="tax-input" name="tax" class="form-control form-control-sm" value="0.00" min="0" step="0.01">
+                    </div>
+                    <div class="mb-3">
+                        <label for="discount-input" class="form-label small">Discount ($)</label>
+                        <input type="number" id="discount-input" name="discount" class="form-control form-control-sm" value="0.00" min="0" step="0.01">
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="h5 text-primary fw-bold mb-0">Grand Total:</span>
+                        <span id="summary-total" class="h5 text-success fw-bold mb-0">$0.00</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="amount-paid" class="form-label fw-bold">Amount Paid ($)</label>
+                        <input type="number" id="amount-paid" class="form-control form-control-lg text-success font-monospace fw-bold" placeholder="0.00" step="0.01">
+                    </div>
+                    <div class="d-flex justify-content-between mb-4 text-muted">
+                        <span>Change:</span>
+                        <span id="change-due" class="fw-bold font-monospace">$0.00</span>
+                    </div>
+
+                    <button type="submit" id="btn-checkout" class="btn btn-success btn-lg w-100 py-3 mb-2 fw-bold" disabled>
+                        <i class="bi bi-receipt"></i> Complete Sale
+                    </button>
+                    <button type="button" id="btn-clear-cart" class="btn btn-outline-danger w-100">
+                        <i class="bi bi-trash"></i> Void / Clear Cart
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/order_cart.js' %}"></script>
+{{ products_data|json_script:"pos-products-data" }}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var products = JSON.parse(document.getElementById('pos-products-data').textContent);
+  OrderCart.initPos(products, '{% static "img/product-placeholder.svg" %}');
+
+  function updateClock() {
+    var el = document.getElementById('live-clock');
+    if (el) el.textContent = new Date().toLocaleString();
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+});
+</script>
+{% endblock %}

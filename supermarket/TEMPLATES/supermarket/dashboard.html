@@ -1,0 +1,371 @@
+{% extends 'base.html' %}
+{% load static product_extras %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+{% get_sales_overview as sales %}
+{% get_top_selling_products 5 as top_products %}
+{% get_latest_customers 5 as latest_customers %}
+
+<div class="dashboard-page">
+    <!-- Dashboard Header -->
+    <div class="dash-topbar">
+        <div class="row g-3 align-items-center">
+            <div class="col-lg-4">
+                <div class="dash-topbar-welcome">
+                    <h1>Welcome back, {{ user.first_name|default:user.username }}!</h1>
+                    <p>Here's what's happening in your store today.</p>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="d-flex flex-wrap align-items-center justify-content-lg-end gap-2 gap-md-3">
+                    <form method="get" action="{% url 'product_list' %}" class="dash-search flex-grow-1 flex-lg-grow-0">
+                        <i class="bi bi-search dash-search-icon"></i>
+                        <input type="search" name="search" class="form-control" placeholder="Search products..." aria-label="Search products">
+                    </form>
+
+                    <span class="dash-date-badge d-none d-md-inline-flex">
+                        <i class="bi bi-calendar3"></i>
+                        {% now "l, M j, Y" %}
+                    </span>
+
+                    <div class="dropdown">
+                        <button class="dash-icon-btn dropdown-toggle border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Quick Actions">
+                            <i class="bi bi-lightning-charge-fill"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 p-2">
+                            <li><h6 class="dropdown-header">Quick Actions</h6></li>
+                            <li><a class="dropdown-item rounded-2" href="{% url 'product_create' %}"><i class="bi bi-plus-circle me-2 text-primary"></i>Add Product</a></li>
+                            <li><a class="dropdown-item rounded-2" href="{% url 'category_create' %}"><i class="bi bi-plus-circle me-2 text-success"></i>Add Category</a></li>
+                            <li><a class="dropdown-item rounded-2" href="{% url 'supplier_create' %}"><i class="bi bi-plus-circle me-2 text-info"></i>Add Supplier</a></li>
+                            <li><a class="dropdown-item rounded-2" href="{% url 'customer_create' %}"><i class="bi bi-plus-circle me-2 text-warning"></i>Add Customer</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item rounded-2" href="{% url 'order_create' %}"><i class="bi bi-cart-plus me-2 text-danger"></i>Create Order</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="dropdown">
+                        <button class="dash-icon-btn border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+                            <i class="bi bi-bell"></i>
+                            {% if low_stock_products %}<span class="dash-notify-dot"></span>{% endif %}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 p-2" style="min-width: 280px;">
+                            <li><h6 class="dropdown-header">Notifications</h6></li>
+                            {% if low_stock_products %}
+                            <li>
+                                <a class="dropdown-item rounded-2" href="{% url 'product_list' %}?sort=stock_asc">
+                                    <i class="bi bi-exclamation-triangle text-warning me-2"></i>
+                                    {{ low_stock_products|length }} low stock product{{ low_stock_products|length|pluralize }}
+                                </a>
+                            </li>
+                            {% else %}
+                            <li><span class="dropdown-item-text text-muted small">No new notifications</span></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    <div class="dropdown">
+                        <button class="dash-user-pill dropdown-toggle border-0 bg-transparent" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="dash-avatar">{{ user.username|make_list|first|upper }}</span>
+                            <span class="d-none d-sm-block text-start">
+                                <span class="dash-user-name d-block">{{ user.get_full_name|default:user.username }}</span>
+                                <span class="dash-user-role">Administrator</span>
+                            </span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 p-2">
+                            <li><span class="dropdown-item-text small text-muted">Signed in as <strong>{{ user.username }}</strong></span></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="post" action="{% url 'logout' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item rounded-2 text-danger">
+                                        <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-5 g-4 mb-4">
+        {% for card in stat_cards %}
+        <div class="col">
+            {% include 'supermarket/partials/dashboard_stat_card.html' with card=card %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Sales Overview + Top Selling -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-8">
+            <div class="dash-panel dash-animate-delay-1">
+                <div class="dash-panel-header">
+                    <h2 class="dash-panel-title"><i class="bi bi-graph-up-arrow"></i> Sales Overview</h2>
+                    <a href="{% url 'sales_list' %}" class="dash-panel-link">View sales log <i class="bi bi-arrow-right"></i></a>
+                </div>
+                <div class="dash-panel-body">
+                    <div class="dash-sales-grid">
+                        <div class="dash-sales-item total">
+                            <div class="dash-sales-label">Total Sales</div>
+                            <div class="dash-sales-value">${{ sales.total|floatformat:2 }}</div>
+                        </div>
+                        <div class="dash-sales-item today">
+                            <div class="dash-sales-label">Today's Sales</div>
+                            <div class="dash-sales-value">${{ sales.today|floatformat:2 }}</div>
+                        </div>
+                        <div class="dash-sales-item week">
+                            <div class="dash-sales-label">Weekly Sales</div>
+                            <div class="dash-sales-value">${{ sales.week|floatformat:2 }}</div>
+                        </div>
+                        <div class="dash-sales-item month">
+                            <div class="dash-sales-label">Monthly Sales</div>
+                            <div class="dash-sales-value">${{ sales.month|floatformat:2 }}</div>
+                        </div>
+                    </div>
+                    {% if sales.total == 0 %}
+                    <div class="text-center mt-3 pt-2 border-top">
+                        <p class="text-muted small mb-0"><i class="bi bi-info-circle me-1"></i>Sales data will appear here once orders are created.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="dash-panel dash-animate-delay-2">
+                <div class="dash-panel-header">
+                    <h2 class="dash-panel-title"><i class="bi bi-trophy"></i> Top Selling</h2>
+                    <a href="{% url 'product_list' %}?sort=stock_desc" class="dash-panel-link">All products</a>
+                </div>
+                <div class="dash-panel-body">
+                    {% if top_products %}
+                        {% for item in top_products %}
+                        <div class="dash-rank-item">
+                            <span class="dash-rank-badge">#{{ forloop.counter }}</span>
+                            <div class="dash-rank-thumb">
+                                {% include 'supermarket/partials/product_image.html' with product=item.product css_class='w-100 h-100' %}
+                            </div>
+                            <div class="flex-grow-1 min-width-0">
+                                <div class="fw-semibold text-truncate">{{ item.product.name }}</div>
+                                <small class="text-muted">{{ item.units_sold }} sold · ${{ item.revenue|floatformat:2 }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="dash-empty py-4">
+                            <div class="dash-empty-icon"><i class="bi bi-bar-chart"></i></div>
+                            <h6>No sales data yet</h6>
+                            <p>Top selling products will appear after orders are placed.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Low Stock + Recent Orders -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="dash-panel dash-animate-delay-3">
+                <div class="dash-panel-header">
+                    <h2 class="dash-panel-title"><i class="bi bi-exclamation-triangle text-warning"></i> Low Stock</h2>
+                    <a href="{% url 'product_list' %}?sort=stock_asc" class="dash-panel-link">View all</a>
+                </div>
+                <div class="dash-panel-body">
+                    {% if low_stock_products %}
+                        {% for product in low_stock_products|slice:":5" %}
+                        <div class="dash-stock-card">
+                            <div class="dash-stock-thumb">
+                                {% include 'supermarket/partials/product_image.html' with product=product css_class='w-100 h-100' %}
+                            </div>
+                            <div class="flex-grow-1 min-width-0">
+                                <div class="fw-semibold text-truncate">{{ product.name }}</div>
+                                <div class="d-flex flex-wrap align-items-center gap-2 mt-1">
+                                    <small class="text-muted">Stock: <strong class="text-danger">{{ product.stock }}</strong></small>
+                                    <small class="text-muted">Min: 10</small>
+                                    {% if product.stock == 0 %}
+                                    <span class="badge bg-danger dash-badge">Out of Stock</span>
+                                    {% else %}
+                                    <span class="badge bg-warning text-dark dash-badge">Low Stock</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <a href="{% url 'product_update' product.id %}" class="btn btn-sm btn-outline-primary flex-shrink-0">
+                                <i class="bi bi-arrow-repeat"></i><span class="d-none d-sm-inline ms-1">Restock</span>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="dash-empty">
+                            <div class="dash-empty-icon"><i class="bi bi-check-circle"></i></div>
+                            <h6>All stocked up!</h6>
+                            <p>No products are currently below the minimum stock level.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="dash-panel dash-animate-delay-3">
+                <div class="dash-panel-header">
+                    <h2 class="dash-panel-title"><i class="bi bi-receipt"></i> Recent Orders</h2>
+                    <a href="{% url 'order_list' %}" class="dash-panel-link">View all</a>
+                </div>
+                <div class="dash-panel-body p-0">
+                    {% if recent_orders %}
+                    <div class="table-responsive">
+                        <table class="table dash-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Customer</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in recent_orders %}
+                                <tr>
+                                    <td class="fw-semibold">#{{ order.id }}</td>
+                                    <td>{{ order.customer.full_name }}</td>
+                                    <td><span class="badge bg-success dash-badge">Completed</span></td>
+                                    <td class="text-muted small">{{ order.date_ordered|date:"M d, Y" }}</td>
+                                    <td class="fw-semibold">${{ order.total_amount|floatformat:2 }}</td>
+                                    <td>
+                                        <a href="{% url 'invoice' order.id %}" class="btn btn-sm btn-light border" title="View invoice">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                        <div class="dash-empty">
+                            <div class="dash-empty-icon"><i class="bi bi-cart-x"></i></div>
+                            <h6>No orders yet</h6>
+                            <p>Recent orders will appear here once customers start purchasing.</p>
+                            <a href="{% url 'order_create' %}" class="btn btn-primary btn-sm mt-2">
+                                <i class="bi bi-plus-circle me-1"></i>Create Order
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Latest Customers + Quick Actions -->
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="dash-panel dash-animate-delay-4">
+                <div class="dash-panel-header">
+                    <h2 class="dash-panel-title"><i class="bi bi-people"></i> Latest Customers</h2>
+                    <a href="{% url 'customer_list' %}" class="dash-panel-link">View all</a>
+                </div>
+                <div class="dash-panel-body">
+                    {% if latest_customers %}
+                        {% for customer in latest_customers %}
+                        <div class="dash-customer-item">
+                            <span class="dash-customer-avatar">{{ customer.full_name|make_list|first|upper }}</span>
+                            <div class="flex-grow-1 min-width-0">
+                                <div class="fw-semibold text-truncate">{{ customer.full_name }}</div>
+                                <small class="text-muted">
+                                    {% if customer.phone %}
+                                    <i class="bi bi-telephone me-1"></i>{{ customer.phone }}
+                                    {% else %}
+                                    <i class="bi bi-telephone me-1"></i>No phone
+                                    {% endif %}
+                                </small>
+                            </div>
+                            <a href="{% url 'customer_update' customer.id %}" class="btn btn-sm btn-light border flex-shrink-0">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="dash-empty">
+                            <div class="dash-empty-icon"><i class="bi bi-person-plus"></i></div>
+                            <h6>No customers yet</h6>
+                            <p>Add your first customer to get started.</p>
+                            <a href="{% url 'customer_create' %}" class="btn btn-primary btn-sm mt-2">
+                                <i class="bi bi-plus-circle me-1"></i>Add Customer
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="dash-panel dash-animate-delay-4">
+                <div class="dash-panel-header">
+                    <h2 class="dash-panel-title"><i class="bi bi-lightning-charge"></i> Quick Actions</h2>
+                </div>
+                <div class="dash-panel-body">
+                    <div class="dash-quick-actions">
+                        <a href="{% url 'product_create' %}" class="dash-quick-btn qa-product">
+                            <i class="bi bi-box-seam"></i> Add Product
+                        </a>
+                        <a href="{% url 'category_create' %}" class="dash-quick-btn qa-category">
+                            <i class="bi bi-tags"></i> Add Category
+                        </a>
+                        <a href="{% url 'supplier_create' %}" class="dash-quick-btn qa-supplier">
+                            <i class="bi bi-truck"></i> Add Supplier
+                        </a>
+                        <a href="{% url 'customer_create' %}" class="dash-quick-btn qa-customer">
+                            <i class="bi bi-person-plus"></i> Add Customer
+                        </a>
+                        <a href="{% url 'order_create' %}" class="dash-quick-btn qa-order" style="grid-column: 1 / -1;">
+                            <i class="bi bi-cart-plus"></i> Create Order
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+  const counters = document.querySelectorAll('.dashboard-stat-counter');
+  if (!counters.length) return;
+  const duration = 900;
+
+  function animateCounter(el) {
+    const target = parseInt(el.getAttribute('data-count'), 10) || 0;
+    const start = performance.now();
+    function tick(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(target * eased);
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    counters.forEach(function (c) { observer.observe(c); });
+  } else {
+    counters.forEach(animateCounter);
+  }
+})();
+</script>
+{% endblock %}

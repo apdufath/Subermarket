@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Confirm Product Deletion</h1>
+</div>
+
+<div class="card border-danger shadow-sm col-md-8">
+    <div class="card-header bg-danger text-white">
+        <h5><i class="bi bi-exclamation-triangle"></i> Are you sure you want to delete this?</h5>
+    </div>
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-md-3 text-center mb-3 mb-md-0">
+                {% include 'supermarket/partials/product_image.html' with product=product css_class='rounded img-thumbnail' style='width: 120px; height: 120px; object-fit: cover;' %}
+            </div>
+            <div class="col-md-9">
+                <p>You are about to delete the product: <strong>{{ product.name }}</strong>.</p>
+                <p class="text-muted small mb-0">Warning: This will permanently delete the product{% if product.image %} and its image{% endif %}. This may affect sales records linked to this product.</p>
+            </div>
+        </div>
+        <form method="POST" class="mt-4">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Yes, Delete</button>
+            <a href="{% url 'product_list' %}" class="btn btn-secondary">No, Go Back</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

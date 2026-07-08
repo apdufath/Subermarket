@@ -1,0 +1,26 @@
+<a href="{% url card.url_name %}"
+   class="dashboard-stat-card {{ card.theme }}"
+   style="animation-delay: {{ card.delay }}ms;"
+   aria-label="{{ card.title }}: {{ card.count }}">
+    <div class="dashboard-stat-card-top">
+        <div class="dashboard-stat-icon" aria-hidden="true">
+            <i class="bi {{ card.icon }}"></i>
+        </div>
+        <i class="bi bi-arrow-up-right dashboard-stat-arrow" aria-hidden="true"></i>
+    </div>
+    <div class="dashboard-stat-content">
+        <p class="dashboard-stat-count mb-1">
+            <span class="dashboard-stat-counter" data-count="{{ card.count }}">0</span>
+        </p>
+        <h2 class="dashboard-stat-title">{{ card.title }}</h2>
+        <p class="dashboard-stat-subtitle">{{ card.subtitle }}</p>
+        <p class="dashboard-stat-desc mb-0">
+            {% if card.title == 'Products' %}Manage inventory and stock levels
+            {% elif card.title == 'Categories' %}Organize products by category
+            {% elif card.title == 'Suppliers' %}Track vendor relationships
+            {% elif card.title == 'Customers' %}View registered customers
+            {% elif card.title == 'Orders' %}Monitor sales and orders
+            {% endif %}
+        </p>
+    </div>
+</a>

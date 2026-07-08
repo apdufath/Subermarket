@@ -1,0 +1,63 @@
+{% load static product_extras %}
+{% with status=product.stock|stock_status %}
+<div class="product-list-item mb-3">
+    <div class="d-flex flex-column flex-md-row align-items-stretch">
+        <div class="product-list-image-wrap">
+            <a href="{% url 'product_detail' product.id %}" class="d-block h-100">
+                {% include 'supermarket/partials/product_image.html' with product=product css_class='w-100 h-100' %}
+            </a>
+        </div>
+
+        <div class="flex-grow-1 p-3 p-md-4 d-flex flex-column flex-lg-row align-items-lg-center gap-3">
+            <div class="flex-grow-1">
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                    <span class="badge badge-category rounded-pill">
+                        <i class="bi bi-tag-fill me-1"></i>{{ product.category.name }}
+                    </span>
+                    {% if status == 'out' %}
+                        <span class="badge badge-stock-out rounded-pill">Out of Stock</span>
+                    {% elif status == 'low' %}
+                        <span class="badge badge-stock-low rounded-pill">Low Stock</span>
+                    {% else %}
+                        <span class="badge badge-stock-in rounded-pill">In Stock</span>
+                    {% endif %}
+                </div>
+
+                <h2 class="h5 fw-bold mb-2">
+                    <a href="{% url 'product_detail' product.id %}" class="text-decoration-none text-dark">
+                        {{ product.name }}
+                    </a>
+                </h2>
+
+                <div class="d-flex flex-wrap gap-3 small text-secondary">
+                    <span><strong class="text-muted">SKU:</strong> {{ product.description|extract_sku }}</span>
+                    <span><strong class="text-muted">Barcode:</strong> {{ product.barcode|default:"—" }}</span>
+                    <span><strong class="text-muted">Stock:</strong> {{ product.stock }} units</span>
+                    <span><strong class="text-muted">Cost:</strong> ${{ product.cost_price }}</span>
+                    {% if product.date_added %}
+                    <span><i class="bi bi-calendar3 me-1"></i>{{ product.date_added|date:"M d, Y" }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="d-flex flex-column align-items-lg-end gap-2 flex-shrink-0">
+                <div class="text-lg-end">
+                    <div class="product-price-selling">${{ product.price }}</div>
+                    <small class="text-muted">Selling price</small>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'product_detail' product.id %}" class="btn btn-sm btn-action-view" title="View">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="{% url 'product_update' product.id %}" class="btn btn-sm btn-action-edit" title="Edit">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a href="{% url 'product_delete' product.id %}" class="btn btn-sm btn-action-delete" title="Delete">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endwith %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card border-danger mx-auto" style="max-width: 500px;">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0">Warning: Delete Order</h5>
+        </div>
+        <div class="card-body text-center">
+            <p class="lead">Are you sure you want to delete order <strong>#{{ order.id }}</strong>?</p>
+            <p class="text-muted small">Customer: {{ order.customer.full_name }}</p>
+
+            <form method="POST" class="mt-4">
+                {% csrf_token %}
+                <a href="{% url 'order_list' %}" class="btn btn-secondary me-2">Go Back</a>
+                <button type="submit" class="btn btn-danger">Yes, Delete Order</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

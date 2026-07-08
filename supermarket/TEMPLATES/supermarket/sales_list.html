@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="bi bi-journal-text"></i> Sales Log & Reports</h1>
+    <a href="{% url 'pos' %}" class="btn btn-success"><i class="bi bi-plus-lg"></i> Go to POS Terminal</a>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-5">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white fw-bold">
+                <i class="bi bi-bar-chart-line me-1"></i> Product Sales Summary
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Product</th>
+                                <th class="text-center">Qty Sold</th>
+                                <th class="text-end">Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in product_sales %}
+                            <tr>
+                                <td class="fw-semibold">{{ row.product__name }}</td>
+                                <td class="text-center"><span class="badge bg-primary">{{ row.quantity_sold }}</span></td>
+                                <td class="text-end text-success fw-bold">${{ row.revenue|floatformat:2 }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted py-4">No sales data yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white fw-bold">
+                <i class="bi bi-receipt me-1"></i> Recent Sales
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Date & Time</th>
+                                <th>Customer</th>
+                                <th>Cashier</th>
+                                <th>Grand Total</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td><span class="badge bg-secondary font-monospace">#{{ order.id }}</span></td>
+                                <td>{{ order.date_ordered|date:"Y-m-d H:i" }}</td>
+                                <td>{{ order.customer.full_name }}</td>
+                                <td>{{ order.user.username|default:"-" }}</td>
+                                <td><strong class="text-success">${{ order.total_amount }}</strong></td>
+                                <td class="text-center">
+                                    <a href="{% url 'invoice' order.pk %}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">No completed sales found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
