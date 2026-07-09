@@ -1,4 +1,3 @@
-import re
 from datetime import timedelta
 from decimal import Decimal
 
@@ -7,18 +6,15 @@ from django.db.models import F, Sum
 from django.utils import timezone
 
 from supermarket.models import Customer, Order, OrderItem, Product
+from supermarket.order_utils import extract_sku as _extract_sku
 
 register = template.Library()
-SKU_PATTERN = re.compile(r'SKU:\s*([A-Z0-9-]+)', re.IGNORECASE)
 
 
 @register.filter
 def extract_sku(description):
     """Extract SKU code from product description, if present."""
-    if not description:
-        return '—'
-    match = SKU_PATTERN.search(description)
-    return match.group(1) if match else '—'
+    return _extract_sku(description)
 
 
 @register.filter

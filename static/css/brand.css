@@ -13,7 +13,6 @@
 
     /* Primary gradient */
     --brand-gradient: linear-gradient(135deg, #0B4D3A 0%, #1E7A4A 45%, #7ED957 100%);
-    --brand-gradient-vertical: linear-gradient(180deg, #0B4D3A 0%, #1E7A4A 55%, #0B4D3A 100%);
 
     /* RGB helpers */
     --brand-dark-rgb: 11, 77, 58;
@@ -85,21 +84,6 @@ body {
     --bs-btn-hover-color: var(--brand-dark-green);
 }
 
-/* Gradient button utility */
-.btn-brand-gradient {
-    background: var(--brand-gradient);
-    border: none;
-    color: #fff;
-    font-weight: 600;
-    transition: transform var(--brand-transition), box-shadow var(--brand-transition);
-}
-
-.btn-brand-gradient:hover {
-    color: #fff;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(var(--brand-dark-rgb), 0.35);
-}
-
 /* Forms */
 .form-control:focus,
 .form-select:focus {
@@ -133,11 +117,6 @@ body {
     background-color: var(--brand-primary-green) !important;
 }
 
-.badge-brand-accent {
-    background: var(--brand-accent-green) !important;
-    color: var(--brand-dark-green) !important;
-}
-
 /* Alerts */
 .alert-success {
     --bs-alert-bg: rgba(var(--brand-accent-rgb), 0.15);
@@ -169,11 +148,6 @@ body {
     background: var(--brand-gradient) !important;
     border: none;
 }
-
-/* Text utilities */
-.text-brand { color: var(--brand-dark-green) !important; }
-.text-brand-accent { color: var(--brand-accent-green) !important; }
-.bg-brand-gradient { background: var(--brand-gradient) !important; }
 
 /* Links */
 a {

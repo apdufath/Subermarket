@@ -54,7 +54,6 @@ body.theme-dark .text-secondary { color: var(--dk-text-2) !important; }
 body.theme-dark .text-success { color: #4ade80 !important; }
 body.theme-dark .text-danger { color: #fca5a5 !important; }
 body.theme-dark .text-warning { color: #fcd34d !important; }
-body.theme-dark .text-brand { color: var(--dk-primary) !important; }
 
 body.theme-dark .border,
 body.theme-dark .border-top,
@@ -67,7 +66,6 @@ body.theme-dark .border-end {
 /* ---------- Surfaces: cards ---------- */
 body.theme-dark .card,
 body.theme-dark .dash-panel,
-body.theme-dark .dash-topbar,
 body.theme-dark .products-toolbar,
 body.theme-dark .product-card,
 body.theme-dark .product-list-item,
@@ -342,11 +340,6 @@ body.theme-dark .btn-info {
 
 body.theme-dark .btn-warning {
     --bs-btn-color: #1F2937;
-}
-
-body.theme-dark .btn-brand-gradient {
-    background: linear-gradient(135deg, #15803D 0%, #16A34A 50%, #22C55E 100%);
-    color: #fff;
 }
 
 /* ---------- Badges & alerts ---------- */

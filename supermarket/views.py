@@ -494,7 +494,6 @@ def customer_list(request):
     return render(request, 'supermarket/customer_list.html', {
         'page_obj': page_obj,
         'search_query': search_query,
-        'customers': customers,
     })
 
 
@@ -677,7 +676,6 @@ def pos_view(request):
     ]
 
     return render(request, 'supermarket/pos.html', {
-        'products': products,
         'products_data': products_data,
         'customers': customers,
     })
