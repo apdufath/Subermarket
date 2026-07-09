@@ -17,22 +17,6 @@ body {
     overflow-x: hidden;
 }
 
-body.theme-dark {
-    background: #111827;
-    color: #e5e7eb;
-}
-
-body.theme-dark .app-navbar,
-body.theme-dark .dash-panel,
-body.theme-dark .dash-topbar,
-body.theme-dark .products-toolbar,
-body.theme-dark .product-card,
-body.theme-dark .card {
-    background: #1f2937 !important;
-    color: #e5e7eb;
-    border-color: #374151 !important;
-}
-
 /* App shell */
 .app-wrapper {
     display: flex;
@@ -601,30 +585,6 @@ body.sidebar-collapsed .sidebar-footer {
     }
 }
 
-/* Dark mode toggle active state */
-body.theme-dark .app-navbar {
-    background: #1f2937;
-    border-color: #374151;
-}
-
-body.theme-dark .navbar-search .form-control,
-body.theme-dark .navbar-action-btn,
-body.theme-dark .navbar-user {
-    background: #111827;
-    border-color: #374151;
-    color: #e5e7eb;
-}
-
-body.theme-dark .navbar-user-name {
-    color: #f3f4f6;
-}
-
-body.theme-dark .navbar-hamburger {
-    background: #111827;
-    border-color: #374151;
-    color: #e5e7eb;
-}
-
 /* App Footer — dark green */
 .app-footer {
     flex-shrink: 0;
@@ -699,20 +659,6 @@ body.theme-dark .navbar-hamburger {
     font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.55);
     font-weight: 500;
-}
-
-body.theme-dark .app-footer {
-    background: #062e23;
-    border-color: rgba(255, 255, 255, 0.08);
-}
-
-body.theme-dark .app-footer-links a:hover {
-    color: var(--brand-light-green);
-}
-
-body.theme-dark .app-footer-bottom {
-    border-color: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.45);
 }
 
 @media (max-width: 991.98px) {

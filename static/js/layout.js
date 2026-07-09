@@ -28,25 +28,41 @@
     }
   }
 
+  function applyTheme(dark) {
+    var root = document.documentElement;
+    if (dark) {
+      root.setAttribute('data-bs-theme', 'dark');
+      document.body.classList.add('theme-dark');
+    } else {
+      root.removeAttribute('data-bs-theme');
+      document.body.classList.remove('theme-dark');
+    }
+    localStorage.setItem(STORAGE_THEME, dark ? 'true' : 'false');
+    syncThemeIcons();
+  }
+
+  function syncThemeIcons() {
+    var dark = document.body.classList.contains('theme-dark');
+    document.querySelectorAll('#darkModeToggle i').forEach(function (icon) {
+      icon.className = dark ? 'bi bi-sun' : 'bi bi-moon-stars';
+    });
+  }
+
   function initDarkMode() {
     var toggle = document.getElementById('darkModeToggle');
-    if (localStorage.getItem(STORAGE_THEME) === 'true') {
+    var dark = localStorage.getItem(STORAGE_THEME) === 'true';
+    if (dark) {
+      document.documentElement.setAttribute('data-bs-theme', 'dark');
       document.body.classList.add('theme-dark');
+    } else {
+      document.documentElement.removeAttribute('data-bs-theme');
+      document.body.classList.remove('theme-dark');
     }
+    syncThemeIcons();
     if (!toggle) return;
     toggle.addEventListener('click', function () {
-      document.body.classList.toggle('theme-dark');
-      var isDark = document.body.classList.contains('theme-dark');
-      localStorage.setItem(STORAGE_THEME, isDark ? 'true' : 'false');
-      var icon = toggle.querySelector('i');
-      if (icon) {
-        icon.className = isDark ? 'bi bi-sun' : 'bi bi-moon-stars';
-      }
+      applyTheme(!document.body.classList.contains('theme-dark'));
     });
-    var icon = toggle.querySelector('i');
-    if (icon && document.body.classList.contains('theme-dark')) {
-      icon.className = 'bi bi-sun';
-    }
   }
 
   function initFullscreen() {
