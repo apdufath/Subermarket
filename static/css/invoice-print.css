@@ -1,0 +1,376 @@
+/* Star Supermarket — A5 Print Layout (148 × 210 mm) */
+
+@page {
+    size: A5 portrait;
+    margin: 6mm 5mm;
+}
+
+@media print {
+    *,
+    *::before,
+    *::after {
+        box-shadow: none !important;
+    }
+
+    html,
+    body {
+        width: 148mm;
+        min-height: auto;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        color: #1f2937 !important;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-size: 8.5pt;
+        line-height: 1.25;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    body.theme-dark,
+    body.theme-dark * {
+        background: transparent;
+        color: #1f2937 !important;
+    }
+
+    /* Hide all app chrome */
+    .app-sidebar,
+    .app-navbar,
+    .app-footer,
+    .offcanvas,
+    .alert,
+    .invoice-actions,
+    .no-print,
+    .d-print-none {
+        display: none !important;
+    }
+
+    .app-wrapper {
+        display: block !important;
+        min-height: auto !important;
+    }
+
+    .app-main {
+        margin: 0 !important;
+        padding: 0 !important;
+        min-height: auto !important;
+        width: 100% !important;
+    }
+
+    .app-content {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* Invoice container */
+    .invoice-page {
+        max-width: none;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .invoice-document {
+        width: 100%;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+        background: #fff !important;
+        page-break-inside: avoid;
+    }
+
+    /* Compact header */
+    .invoice-header-band {
+        padding: 0.45rem 0.55rem !important;
+        background: linear-gradient(135deg, #0b4d3a 0%, #1e7a4a 100%) !important;
+        color: #fff !important;
+    }
+
+    .invoice-header-band .row {
+        --bs-gutter-x: 0.5rem;
+        --bs-gutter-y: 0.25rem;
+        align-items: center !important;
+    }
+
+    .invoice-store-logo {
+        width: 32px !important;
+        height: 32px !important;
+        padding: 0.2rem !important;
+    }
+
+    .invoice-store-name {
+        font-size: 11pt !important;
+        font-weight: 800;
+        line-height: 1.15 !important;
+    }
+
+    .invoice-title-block {
+        text-align: right !important;
+        margin-top: 0 !important;
+    }
+
+    .invoice-title {
+        font-size: 10pt !important;
+        margin-bottom: 0.1rem !important;
+        letter-spacing: 0.06em;
+    }
+
+    .invoice-number {
+        font-size: 8.5pt !important;
+        font-weight: 700;
+    }
+
+    .invoice-date {
+        font-size: 7.5pt !important;
+        line-height: 1.2;
+    }
+
+    /* Body */
+    .invoice-body {
+        padding: 0.45rem 0.55rem 0.35rem !important;
+        background: #fff !important;
+    }
+
+    .invoice-section-title {
+        font-size: 6.5pt !important;
+        margin-bottom: 0.25rem !important;
+        padding-bottom: 0.15rem !important;
+        border-bottom-width: 1px !important;
+        color: #0b4d3a !important;
+    }
+
+    .invoice-section-title i {
+        display: none;
+    }
+
+    /* Info cards — side by side, compact */
+    .invoice-body > .row.g-3 {
+        --bs-gutter-x: 0.4rem;
+        --bs-gutter-y: 0.25rem;
+        margin-bottom: 0.25rem !important;
+    }
+
+    .invoice-body > .row.g-3 > [class*="col-"] {
+        width: 50% !important;
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+        padding-left: 0.2rem !important;
+        padding-right: 0.2rem !important;
+    }
+
+    .invoice-info-card {
+        padding: 0.3rem 0.4rem !important;
+        border-radius: 0.25rem !important;
+        background: #f8fafc !important;
+        border: 1px solid #e5e7eb !important;
+        height: auto !important;
+    }
+
+    .invoice-info-card .label {
+        font-size: 6pt !important;
+        margin-bottom: 0.05rem !important;
+        color: #64748b !important;
+    }
+
+    .invoice-info-card .value {
+        font-size: 7.5pt !important;
+        margin-bottom: 0.25rem !important;
+        font-weight: 600;
+        color: #1f2937 !important;
+    }
+
+    .invoice-info-card .value:last-child {
+        margin-bottom: 0 !important;
+    }
+
+    .invoice-store-meta-compact {
+        font-size: 6.5pt !important;
+        opacity: 0.95;
+        color: #fff !important;
+        margin-top: 0.1rem !important;
+    }
+
+    /* Product table — compact */
+    .invoice-table-wrap {
+        margin-top: 0.35rem !important;
+        border-radius: 0.25rem !important;
+        border: 1px solid #e5e7eb !important;
+        overflow: hidden;
+        page-break-inside: auto;
+    }
+
+    .invoice-table {
+        font-size: 7.5pt !important;
+        width: 100% !important;
+        table-layout: fixed;
+    }
+
+    .invoice-table thead {
+        display: table-header-group !important;
+    }
+
+    .invoice-table thead th {
+        padding: 0.2rem 0.25rem !important;
+        font-size: 6.5pt !important;
+        background: #0b4d3a !important;
+        color: #fff !important;
+        white-space: nowrap;
+    }
+
+    .invoice-table tbody tr {
+        display: table-row !important;
+        page-break-inside: avoid;
+    }
+
+    .invoice-table tbody td {
+        display: table-cell !important;
+        padding: 0.18rem 0.25rem !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+        color: #1f2937 !important;
+        vertical-align: middle !important;
+        text-align: inherit !important;
+    }
+
+    .invoice-table tbody td::before {
+        display: none !important;
+        content: none !important;
+    }
+
+    .invoice-table tbody tr:hover {
+        background: transparent !important;
+    }
+
+    .invoice-table th:nth-child(2),
+    .invoice-table td:nth-child(2) {
+        width: 38%;
+    }
+
+    .invoice-table th:nth-child(3),
+    .invoice-table td:nth-child(3) {
+        width: 12%;
+        text-align: center !important;
+    }
+
+    .invoice-table th:nth-child(4),
+    .invoice-table td:nth-child(4) {
+        width: 18%;
+        text-align: right !important;
+    }
+
+    .invoice-table th:nth-child(5),
+    .invoice-table td:nth-child(5) {
+        width: 18%;
+        text-align: right !important;
+    }
+
+    .invoice-product-name {
+        font-size: 7.5pt !important;
+        font-weight: 700;
+        line-height: 1.15 !important;
+        color: #1f2937 !important;
+        word-break: break-word;
+    }
+
+    .invoice-product-qty-hint {
+        font-size: 6.5pt !important;
+        color: #64748b !important;
+        line-height: 1.1;
+    }
+
+    /* Summary — horizontal compact row */
+    .invoice-summary {
+        margin-top: 0.35rem !important;
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        gap: 0.35rem !important;
+        align-items: stretch !important;
+        page-break-inside: avoid;
+    }
+
+    .invoice-payment-card,
+    .invoice-totals-card {
+        flex: 1 1 50% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        padding: 0.35rem 0.4rem !important;
+        border-radius: 0.25rem !important;
+        border: 1px solid #e5e7eb !important;
+        background: #fff !important;
+    }
+
+    .invoice-payment-card .invoice-section-title,
+    .invoice-totals-card .invoice-section-title {
+        margin-bottom: 0.2rem !important;
+    }
+
+    .invoice-totals-row {
+        padding: 0.1rem 0 !important;
+        font-size: 7.5pt !important;
+        color: #64748b !important;
+    }
+
+    .invoice-totals-row .amount {
+        font-size: 7.5pt !important;
+        color: #1f2937 !important;
+    }
+
+    .invoice-totals-row.grand-total {
+        margin-top: 0.2rem !important;
+        padding: 0.3rem 0.4rem !important;
+        font-size: 8pt !important;
+        background: linear-gradient(135deg, #0b4d3a 0%, #1e7a4a 100%) !important;
+        color: #fff !important;
+        border-radius: 0.2rem !important;
+    }
+
+    .invoice-totals-row.grand-total .amount {
+        font-size: 9.5pt !important;
+        color: #fff !important;
+        font-weight: 800;
+    }
+
+    .invoice-payment-status {
+        font-size: 6.5pt !important;
+        padding: 0.15em 0.45em !important;
+    }
+
+    .invoice-payment-status.paid {
+        background: rgba(34, 197, 94, 0.12) !important;
+        color: #15803d !important;
+    }
+
+    /* Footer */
+    .invoice-footer {
+        margin-top: 0.35rem !important;
+        padding-top: 0.3rem !important;
+        border-top: 1px dashed #d1d5db !important;
+        text-align: center;
+        page-break-inside: avoid;
+    }
+
+    .invoice-footer-thanks {
+        font-size: 8pt !important;
+        font-weight: 700;
+        color: #0b4d3a !important;
+        margin-bottom: 0 !important;
+    }
+
+    /* Force light theme for all invoice parts */
+    body.theme-dark .invoice-document,
+    body.theme-dark .invoice-info-card,
+    body.theme-dark .invoice-payment-card,
+    body.theme-dark .invoice-totals-card,
+    body.theme-dark .invoice-table tbody td,
+    body.theme-dark .invoice-info-card .value,
+    body.theme-dark .invoice-product-name {
+        background: #fff !important;
+        color: #1f2937 !important;
+        border-color: #e5e7eb !important;
+    }
+
+    body.theme-dark .invoice-table thead th {
+        background: #0b4d3a !important;
+        color: #fff !important;
+    }
+}

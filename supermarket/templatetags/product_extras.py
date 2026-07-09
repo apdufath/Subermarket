@@ -17,6 +17,31 @@ def extract_sku(description):
     return _extract_sku(description)
 
 
+def _merchandise_subtotal(order):
+    return sum((item.subtotal for item in order.items.all()), Decimal('0.00'))
+
+
+@register.filter
+def order_merchandise_subtotal(order):
+    """Sum line-item subtotals for invoice display."""
+    return _merchandise_subtotal(order)
+
+
+@register.filter
+def order_adjustment(order):
+    """Difference between grand total and merchandise subtotal (tax/discount)."""
+    return order.total_amount - _merchandise_subtotal(order)
+
+
+@register.filter
+def abs_value(value):
+    """Return absolute value for invoice display."""
+    try:
+        return abs(value)
+    except (TypeError, ValueError):
+        return value
+
+
 @register.filter
 def stock_status(stock):
     """Return stock status label for badge display."""

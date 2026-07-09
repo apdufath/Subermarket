@@ -1,39 +1,112 @@
 {% extends 'base.html' %}
+{% load static product_extras %}
+
+{% block title %}Invoice #{{ order.id }} — Star Supermarket{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/invoice.css' %}">
+<link rel="stylesheet" href="{% static 'css/invoice-print.css' %}" media="print">
+{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2><i class="bi bi-receipt"></i> Invoice for Order #{{ order.id }}</h2>
+{% with subtotal=order|order_merchandise_subtotal adjustment=order|order_adjustment %}
+<div class="invoice-page">
+    <!-- Actions -->
+    <div class="invoice-actions no-print d-flex flex-wrap justify-content-between align-items-center gap-2">
         <div>
-            <button onclick="window.print()" class="btn btn-outline-dark me-2">
-                <i class="bi bi-printer"></i> Print
+            <h1 class="h4 mb-0 fw-bold"><i class="bi bi-receipt-cutoff text-success me-2"></i>Invoice</h1>
+            <p class="text-muted small mb-0">Order #{{ order.id }} · {{ order.date_ordered|date:"M d, Y" }}</p>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <button type="button" onclick="window.print()" class="btn btn-primary">
+                <i class="bi bi-printer me-1"></i> Print Invoice
             </button>
-            <a href="{% url 'order_list' %}" class="btn btn-secondary">Back</a>
+            <button type="button" class="btn btn-outline-secondary" disabled title="PDF export coming soon">
+                <i class="bi bi-file-earmark-pdf me-1"></i> Download PDF
+            </button>
+            <a href="{% url 'order_list' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back to Orders
+            </a>
         </div>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <h5 class="text-muted">Customer</h5>
-                    <p class="mb-1"><strong>{{ order.customer.full_name }}</strong></p>
-                    <p class="mb-1">{{ order.customer.phone|default:"-" }}</p>
-                    <p class="mb-0">{{ order.customer.email|default:"-" }}</p>
+    <!-- Invoice document -->
+    <article class="invoice-document" id="invoicePrintArea">
+        <!-- Header -->
+        <header class="invoice-header-band">
+            <div class="row g-4 align-items-start">
+                <div class="col-lg-7">
+                    <div class="d-flex align-items-start gap-3">
+                        <img src="{% static 'img/auth-logo.svg' %}" alt="Star Supermarket" class="invoice-store-logo">
+                        <div>
+                            <div class="invoice-store-name">Star Supermarket</div>
+                            <div class="invoice-store-tagline d-print-none">Store Management System</div>
+                            <div class="invoice-store-meta mt-2 d-print-none">
+                                <div><i class="bi bi-geo-alt me-1"></i> 123 Market Street, Downtown</div>
+                                <div><i class="bi bi-telephone me-1"></i> +1 (555) 123-4567</div>
+                                <div><i class="bi bi-envelope me-1"></i> info@starsupermarket.com</div>
+                            </div>
+                            <div class="invoice-store-meta-compact d-none d-print-block">
+                                123 Market Street · +1 (555) 123-4567
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6 text-md-end">
-                    <h5 class="text-muted">Order Details</h5>
-                    <p class="mb-1"><strong>Date:</strong> {{ order.date_ordered|date:"d M, Y H:i" }}</p>
-                    <p class="mb-0"><strong>Staff:</strong> {{ order.user.username|default:"-" }}</p>
+                <div class="col-lg-5">
+                    <div class="invoice-title-block">
+                        <div class="invoice-title">Invoice</div>
+                        <div class="invoice-number">#INV-{{ order.id|stringformat:"05d" }}</div>
+                        <div class="invoice-date"><i class="bi bi-calendar3 me-1 d-print-none"></i>{{ order.date_ordered|date:"l, F j, Y · g:i A" }}</div>
+                        <span class="invoice-status-badge d-print-none"><i class="bi bi-check-circle me-1"></i>Completed</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="invoice-body">
+            <!-- Customer & Order info -->
+            <div class="row g-3 mb-2">
+                <div class="col-md-6">
+                    <h2 class="invoice-section-title"><i class="bi bi-person me-1"></i> Customer Information</h2>
+                    <div class="invoice-info-card">
+                        <div class="label">Customer Name</div>
+                        <div class="value">{{ order.customer.full_name }}</div>
+                        <div class="label">Phone Number</div>
+                        <div class="value">{{ order.customer.phone|default:"—" }}</div>
+                        <div class="label d-print-none">Email</div>
+                        <div class="value d-print-none">{{ order.customer.email|default:"—" }}</div>
+                        <div class="label d-print-none">Address</div>
+                        <div class="value mb-0 d-print-none">{{ order.customer.address|default:"—" }}</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h2 class="invoice-section-title"><i class="bi bi-bag-check me-1"></i> Order Information</h2>
+                    <div class="invoice-info-card">
+                        <div class="label">Order ID</div>
+                        <div class="value">#{{ order.id }}</div>
+                        <div class="label">Order Date</div>
+                        <div class="value">{{ order.date_ordered|date:"d M, Y H:i" }}</div>
+                        <div class="label d-print-none">Created By (Cashier)</div>
+                        <div class="value d-print-none">{{ order.user.get_full_name|default:order.user.username|default:"—" }}</div>
+                        <div class="label d-print-none">Payment Method</div>
+                        <div class="value d-print-none">Cash / In-Store</div>
+                        <div class="label">Payment Status</div>
+                        <div class="value mb-0">
+                            <span class="invoice-payment-status paid"><i class="bi bi-check-circle-fill"></i> Paid</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="table-responsive">
-                <table class="table table-bordered align-middle">
-                    <thead class="table-dark">
+            <!-- Products table -->
+            <div class="invoice-table-wrap">
+                <table class="table invoice-table align-middle mb-0">
+                    <thead>
                         <tr>
+                            <th class="d-print-none" style="width: 60px;">Image</th>
                             <th>Product</th>
-                            <th class="text-center">Quantity</th>
+                            <th class="d-print-none">SKU</th>
+                            <th class="text-center">Qty</th>
                             <th class="text-end">Unit Price</th>
                             <th class="text-end">Subtotal</th>
                         </tr>
@@ -41,29 +114,94 @@
                     <tbody>
                         {% for item in order.items.all %}
                         <tr>
-                            <td>
-                                <strong>{{ item.product.name }}</strong>
-                                <span class="text-muted"> × {{ item.quantity }}</span>
+                            <td class="invoice-td-image d-print-none" data-label="">
+                                <div class="invoice-product-thumb-wrap">
+                                    {% include 'supermarket/partials/product_image.html' with product=item.product css_class='invoice-product-thumb' %}
+                                </div>
                             </td>
-                            <td class="text-center">{{ item.quantity }}</td>
-                            <td class="text-end">${{ item.price }}</td>
-                            <td class="text-end fw-semibold">${{ item.subtotal }}</td>
+                            <td data-label="Product">
+                                <div class="invoice-product-name">{{ item.product.name }}</div>
+                                <div class="invoice-product-qty-hint">× {{ item.quantity }}</div>
+                            </td>
+                            <td class="d-print-none" data-label="SKU">
+                                <span class="invoice-sku-badge">{{ item.product.description|extract_sku }}</span>
+                            </td>
+                            <td class="text-center fw-semibold" data-label="Qty">{{ item.quantity }}</td>
+                            <td class="text-end" data-label="Unit Price">${{ item.price|floatformat:2 }}</td>
+                            <td class="text-end fw-bold" data-label="Subtotal">${{ item.subtotal|floatformat:2 }}</td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="4" class="text-center text-muted">No items were added to this order.</td>
+                            <td colspan="6" class="text-center text-muted py-4">No items were added to this order.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
-                    <tfoot>
-                        <tr>
-                            <th colspan="3" class="text-end">Grand Total</th>
-                            <th class="text-end text-success">${{ order.total_amount }}</th>
-                        </tr>
-                    </tfoot>
                 </table>
             </div>
+
+            <!-- Summary & Payment -->
+            <div class="invoice-summary">
+                <div class="invoice-payment-card">
+                    <h2 class="invoice-section-title mb-3"><i class="bi bi-credit-card me-1"></i> Payment Details</h2>
+                    <div class="invoice-totals-row d-print-none">
+                        <span>Amount Paid</span>
+                        <span class="amount text-success">${{ order.total_amount|floatformat:2 }}</span>
+                    </div>
+                    <div class="invoice-totals-row d-print-none">
+                        <span>Remaining Balance</span>
+                        <span class="amount">$0.00</span>
+                    </div>
+                    <div class="invoice-totals-row pt-2">
+                        <span>Status</span>
+                        <span class="invoice-payment-status paid"><i class="bi bi-check-circle-fill"></i> Paid</span>
+                    </div>
+                </div>
+
+                <div class="invoice-totals-card">
+                    <h2 class="invoice-section-title mb-3"><i class="bi bi-calculator me-1"></i> Order Summary</h2>
+                    <div class="invoice-totals-row">
+                        <span>Subtotal</span>
+                        <span class="amount">${{ subtotal|floatformat:2 }}</span>
+                    </div>
+                    {% if adjustment < 0 %}
+                    <div class="invoice-totals-row">
+                        <span>Discount</span>
+                        <span class="amount text-success">-${{ adjustment|abs_value|floatformat:2 }}</span>
+                    </div>
+                    {% elif adjustment > 0 %}
+                    <div class="invoice-totals-row">
+                        <span>Tax &amp; Fees</span>
+                        <span class="amount">${{ adjustment|floatformat:2 }}</span>
+                    </div>
+                    {% else %}
+                    <div class="invoice-totals-row d-print-none">
+                        <span>Discount</span>
+                        <span class="amount">$0.00</span>
+                    </div>
+                    <div class="invoice-totals-row d-print-none">
+                        <span>Tax</span>
+                        <span class="amount">$0.00</span>
+                    </div>
+                    {% endif %}
+                    <div class="invoice-totals-row d-print-none">
+                        <span>Shipping Fee</span>
+                        <span class="amount">$0.00</span>
+                    </div>
+                    <div class="invoice-totals-row grand-total">
+                        <span>Grand Total</span>
+                        <span class="amount">${{ order.total_amount|floatformat:2 }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="invoice-footer">
+                <p class="invoice-footer-thanks">Thank you for shopping with Star Supermarket!</p>
+                <p class="invoice-footer-note d-print-none">We appreciate your business.</p>
+                <p class="invoice-footer-copy d-print-none">&copy; {% now "Y" %} Star Supermarket. All rights reserved.</p>
+            </footer>
         </div>
-    </div>
+    </article>
 </div>
+{% endwith %}
 {% endblock %}
