@@ -4,7 +4,7 @@ Star Supermarket — Django store management system with inventory, orders, POS,
 
 ## Setup
 
-```bash
+```bash 
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
